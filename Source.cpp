@@ -1,6 +1,8 @@
 #include <tuple>
 #include <iostream>
 
+#include "cgp.h"
+
 using namespace std;
 
 int main() {
