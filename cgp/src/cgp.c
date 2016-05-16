@@ -192,6 +192,8 @@ static double _gaussian(const int numInputs, const double *inputs, const double 
 static double _step(const int numInputs, const double *inputs, const double *connectionWeights);
 static double _softsign(const int numInputs, const double *inputs, const double *connectionWeights);
 static double _hyperbolicTangent(const int numInputs, const double *inputs, const double *connectionWeights);
+static double _ln(const int numInputs, const double *inputs, const double *connectionWeights);
+static double _e(const int numInputs, const double *inputs, const double *connectionWeights);
 
 /* other */
 static double randDecimal(void);
@@ -417,7 +419,12 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 	else if (strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _tangent, "tan", 1);
 	}
-
+	else if (strncmp(functionName, "e", FUNCTIONNAMELENGTH) == 0) {
+		addCustomNodeFunction(params, _e, "e", 0);
+	}
+	else if (strncmp(functionName, "ln", FUNCTIONNAMELENGTH) == 0) {
+		addCustomNodeFunction(params, _ln, "ln", 1);
+	}
 
 	/* Boolean logic gates */
 
@@ -3806,6 +3813,15 @@ static double _hyperbolicTangent(const int numInputs, const double *inputs, cons
 	return out;
 }
 
+static double _ln(const int numInputs, const double *inputs, const double *connectionWeights) {
+
+	return log(inputs[0]);
+}
+
+static double _e(const int numInputs, const double *inputs, const double *connectionWeights) {
+
+	return 2.71828182845904523536028747135266249;
+}
 
 /*
 	Returns the sum of the weighted inputs.
