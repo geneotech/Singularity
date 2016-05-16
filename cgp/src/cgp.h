@@ -1061,6 +1061,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 */
 DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output);
 
+DLL_EXPORT int getActiveNodes(struct chromosome *chromo);
 
 
 /*
@@ -1901,7 +1902,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 		<initialiseParameters>
 */
 DLL_EXPORT void setRandomNumberSeed(unsigned int seed);
-
+extern void(*reportChromo)(struct chromosome *chromo);
 /*
 	End of extern "C"
 */

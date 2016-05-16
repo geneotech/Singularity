@@ -256,7 +256,7 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 	params->numThreads = 1;
 
 	/* Seed the random number generator */
-	srand(time(NULL));
+	srand(1);
 
 	return params;
 }
@@ -1120,7 +1120,7 @@ DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights) {
 	}
 
 	/* for all of the outputs */
-	printf("outputs: ");
+	printf("output nodes: ");
 	for (i = 0; i < chromo->numOutputs; i++) {
 
 		/* print the output node locations */
@@ -1226,6 +1226,9 @@ DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output) {
 	return chromo->outputValues[output];
 }
 
+DLL_EXPORT int getActiveNodes(struct chromosome *chromo) {
+	return chromo->numActiveNodes;
+}
 
 
 /*
@@ -2922,7 +2925,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 	Sets the random number seed
 */
 DLL_EXPORT void setRandomNumberSeed(unsigned int seed) {
-	srand(seed);
+	srand(1);
 }
 
 
@@ -2962,7 +2965,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 
 	return rels;
 }
-
+void(*reportChromo)(struct chromosome *chromo) = NULL;
 
 DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int numGens) {
 
@@ -3069,6 +3072,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 		/* display progress to the user at the update frequency specified */
 		if (params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens - 1) ) {
+			reportChromo(bestChromo);
 			printf("%d\t%f\n", gen, bestChromo->fitness);
 		}
 
