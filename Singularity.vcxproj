@@ -118,10 +118,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cgp\src\cgp.c" />
+    <ClCompile Include="prime_evolution.cpp" />
+    <ClCompile Include="single_prime_evolution.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h" />
+    <ClInclude Include="prime_evolution.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

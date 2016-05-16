@@ -21,9 +21,18 @@
     <ClCompile Include="cgp\src\cgp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="prime_evolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="single_prime_evolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="prime_evolution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
