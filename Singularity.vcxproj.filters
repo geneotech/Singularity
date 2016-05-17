@@ -27,12 +27,42 @@
     <ClCompile Include="single_prime_evolution.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="modulities_evolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="randval.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="primes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modulity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="prime_evolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="randval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="img.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="modulity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

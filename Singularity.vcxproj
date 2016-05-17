@@ -80,6 +80,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NO_DLL;_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -97,6 +98,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NO_DLL;_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -118,13 +120,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cgp\src\cgp.c" />
+    <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="modulities_evolution.cpp" />
+    <ClCompile Include="modulity.cpp" />
+    <ClCompile Include="primes.cpp" />
     <ClCompile Include="prime_evolution.cpp" />
+    <ClCompile Include="randval.cpp" />
     <ClCompile Include="single_prime_evolution.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h" />
+    <ClInclude Include="img.h" />
+    <ClInclude Include="lodepng.h" />
+    <ClInclude Include="modulity.h" />
+    <ClInclude Include="primes.h" />
     <ClInclude Include="prime_evolution.h" />
+    <ClInclude Include="randval.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
