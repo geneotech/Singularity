@@ -4,11 +4,11 @@
 #include "lodepng.h"
 #include <sstream>
 
-int w = 3302;
-int h = 400;
-std::vector<unsigned char> img;
+static int w = 3302;
+static int h = 400;
+static std::vector<unsigned char> img;
 
-void setpix(int x, int y, int val) {
+static void setpix(int x, int y, int val) {
 	if (x >= w || y >= h || y < 0) return;
 
 	img[(w * (h - y - 1) + x) * 4] = val;
@@ -16,21 +16,21 @@ void setpix(int x, int y, int val) {
 	img[(w * (h - y - 1) + x) * 4 + 2] = val;
 }
 
-void setpix(int x, int y, int r, int g, int b) {
+static void setpix(int x, int y, int r, int g, int b) {
 	if (x >= w || y >= h) return;
 	img[(w * (h - y - 1) + x) * 4] = r;
 	img[(w * (h - y - 1) + x) * 4 + 1] = g;
 	img[(w * (h - y - 1) + x) * 4 + 2] = b;
 }
 
-void setpixrgb(int x, int y, unsigned RGBint) {
+static void setpixrgb(int x, int y, unsigned RGBint) {
 	if (x >= w || y >= h) return;
 	img[(w * (h - y - 1) + x) * 4] = RGBint & 255;
 	img[(w * (h - y - 1) + x) * 4 + 1] = (RGBint >> 8) & 255;
 	img[(w * (h - y - 1) + x) * 4 + 2] = (RGBint >> 16) & 255;
 }
 
-void setwh(int _w, int _h) {
+static void setwh(int _w, int _h) {
 	w = _w;
 	h = _h;
 
@@ -43,7 +43,7 @@ void setwh(int _w, int _h) {
 }
 
 #define COLS 7
-void setcol(int x, int y, int c) {
+static void setcol(int x, int y, int c) {
 	switch (c) {
 	case 0: setpix(x, y, 255); break;
 	case 1: setpix(x, y, 255, 0, 0); break;

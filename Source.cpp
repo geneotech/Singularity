@@ -7,6 +7,7 @@ using namespace std;
 #include "prime_evolution.h"
 #include "primes.h"
 #include "modulity.h"
+#include "tests/tests.h"
 
 double multipliedError(struct parameters *params, struct chromosome *chromo, struct dataSet *data) {
 	unsigned long long usemiprime = 7109 * 3301;
@@ -82,27 +83,9 @@ void _reportChromo(struct chromosome* bestChromo) {
 int main() {
 	is_prime_lookup_init();
 
-	//for (int i = 2; i < 100; ++i) {
-	//	cout << i << ": ";
-	//	
-	//	int p = i;
-	//	while (true) {
-	//		if (is_prime_lookup[p])
-	//			break;
-	//		
-	//		--p;
-	//	}
-	//	
-	//	cout << "M(" << i << ", " << p << ") = " << modulity(i, p) << endl;
-	//}
-	//
-	//std::cout << "Done.";
-	//int ab;
-	//cin >> ab;
-
-	
-	run_modulity_cgp();
+	//run_modulity_cgp();
 	//run_single_prime_cgp();
+	analyticmodulity();
 	return 0;
 
 	struct parameters *params = NULL;

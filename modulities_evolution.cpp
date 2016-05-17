@@ -57,6 +57,8 @@ void _reportModulityChromo(struct chromosome* bestChromo) {
 
 int bigoff_x = 9000;
 int bigoff_y = 4500;
+int smoff_x = 29000;
+int smoff_y = 1500;
 
 int modulities[2000][2000];
 int bigmodulities[2000][2000];
@@ -66,7 +68,7 @@ std::pair<int, int> trials[80000];
 double modulityFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data) {
 	double sumError = 0.0;
 
-	int trialcnt = 40000;
+	int trialcnt = 79000;
 
 	static thread_local double in[2];
 
@@ -77,8 +79,8 @@ double modulityFitness(struct parameters *params, struct chromosome *chromo, str
 		int y = trials[i].second;
 
 		//{
-		//	in[0] = x;
-		//	in[1] = y;
+		//	in[0] = x + smoff_x;
+		//	in[1] = y + smoff_y;
 		//
 		//	executeChromosome(chromo, in);
 		//	sumError += std::abs(modulities[x][y] - getChromosomeOutput(chromo, 0));
@@ -98,7 +100,7 @@ double modulityFitness(struct parameters *params, struct chromosome *chromo, str
 void run_modulity_cgp() {
 	for (int i = 1; i < 2000; ++i)
 		for (int j = 1; j < 2000; ++j)
-			modulities[i][j] = modulity(i, j);
+			modulities[i][j] = modulity(i + smoff_x, j + smoff_y);
 
 	for (int i = 1; i < 2000; ++i)
 		for (int j = 1; j < 2000; ++j)
