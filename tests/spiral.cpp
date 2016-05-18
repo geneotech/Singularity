@@ -20,16 +20,34 @@ int spiral_pos_to_index(vec2 p)
 	return q ? (p.x > 0. ? y - x - x : y)
 		: (p.y > 0. ? y - x : y + x);
 }
+
+int ulam_get_map(int x, int y, int n)
+{
+	x -= (n - 1) / 2;
+	y -= n / 2;
+
+	int mx = abs(x), my = abs(y);
+	int l = 2 * std::max(mx, my);
+	int d = y > x ? l * 3 + x + y : l - x - y;
+
+	return pow(l - 1, 2) + d;
+}
+
 #include <cassert>
+#include <iostream>
+using namespace std;
 vec2 spiral_index_to_pos(int i) {
-	int sidelen = sqrt(i);
-	int layer = floor((sidelen + 1) / 2);
-	int offset = i - sidelen*sidelen;
-	int segment = floor(offset / (sidelen + 1));
-	int offset2 = offset - 4 * segment + 1 - layer;
+	double sidelen = floor(sqrt(i));
+	
+	//std::cout << i << " " << sidelen << std::endl;
+
+	double layer = ((sidelen + 1) / 2);
+	double offset = i - sidelen*sidelen;
+	double segment = (offset / (sidelen + 1));
+	double offset2 = offset - 4 * segment + 1 - layer;
 
 	int x, y;
-	switch (segment) {
+	switch (int(segment)) {
 	case 0: x = layer; y = offset2; break;
 	case 1: x = -offset2; y = layer; break;
 	case 2: x = -layer; y = -offset2; break;
@@ -39,7 +57,63 @@ vec2 spiral_index_to_pos(int i) {
 
 	return{ x, y };
 }
+#include "../primes.h"
+
+#include "../modulity.h"
+
+#define SIDE 10000
+#define COUNT SIDE*SIDE
+
+int linearized_divisor_plot[COUNT];
+int special_col[COUNT];
 
 void spiral() {
+	std::fill(linearized_divisor_plot, linearized_divisor_plot + COUNT, 0);
+	std::fill(special_col, special_col + COUNT, 0);
+	
+	setwh(SIDE, SIDE);
+	int n = SIDE;
+	
+	int l = 0;
+	for (int x = 0; l < COUNT; ++x) {
+		bool ispri = is_prime_lookup[x];
+		//if (!ispri)
+		//	continue;
+		//	special_col[l] = true;
 
+		if (x % 2 == 0) {
+			for (int y = 2; y < x && l < COUNT; ++y) {
+				linearized_divisor_plot[l] = gcd_length(x, y) - 1;
+				// special_col[l] = ispri;
+				++l;
+			}
+		}
+		else {
+			for (int y = x-1; y > 1 && l < COUNT; --y) {
+				linearized_divisor_plot[l] = gcd_length(x, y) - 1;
+				// special_col[l] = ispri;
+				++l;
+			}
+		}
+	}
+
+	for (int x = 0; x < n; ++x) {
+		for (int y = 0; y < n; ++y) {
+			int z = ulam_get_map(y, x, n);
+
+			//if (linearized_divisor_plot[z])
+			//	setpix(x, y, 255);
+			auto val = linearized_divisor_plot;
+			if (val[z]) {
+				if (special_col[z] == 0) {
+					setpix(x, y, 255 / val[z]);
+				}
+				//if (special_col[z] == 1){
+				//	setpix(x, y, 255, 0, 0);
+				//}
+			}
+		}
+	}
+
+	lodepng::encode("pics/ulam.png", img, w, h);
 }
