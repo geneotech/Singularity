@@ -107,20 +107,32 @@ void spiral() {
 	int l = 0;
 	for (int x = 0; l < COUNT; ++x) {
 		bool ispri = is_prime_lookup[x];
+		bool divhit = false;
 		//if (!ispri)
 		//	continue;
 		//	special_col[l] = true;
 
-		if (x % 2 == 0) {
+		bool alternate = x % 2 != 0;
+
+		alternate = false;
+		if (!alternate) {
 			for (int y = 2; y < x && l < COUNT; ++y) {
-				linearized_divisor_plot[l] = gcd_length(x, y) - 1;
+				if(!divhit)
+					linearized_divisor_plot[l] = x%y == 0;
+				
+				if (x%y == 0)
+					divhit = true;
 				// special_col[l] = ispri;
 				++l;
 			}
 		}
 		else {
 			for (int y = x-1; y > 1 && l < COUNT; --y) {
-				linearized_divisor_plot[l] = gcd_length(x, y) - 1;
+				if (!divhit)
+					linearized_divisor_plot[l] = x%y == 0;
+
+				if (x%y == 0)
+					divhit = true;
 				// special_col[l] = ispri;
 				++l;
 			}

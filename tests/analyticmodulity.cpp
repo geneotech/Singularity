@@ -1,5 +1,6 @@
 #include "tests.h"
 #include "../img.h"
+#include "../modulity.h"
 
 void analyticmodulity() {
 
@@ -34,20 +35,26 @@ void analyticmodulity() {
 			double x = n;
 			double y = i;
 
-			double val = 0.0;
+			//double val = 0.0;
 
 			//{
 			//	auto sinval = sin(3.1415926535897932384626433832795 * ((x/y) + x / ((x / (x / y + 1)) + 1) + x / ((x/y)+1) ));
 			//	val += 1 - sinval*sinval;
 			//}
 
-			{
-				auto sinval = sin(3.1415926535897932384626433832795 * x / y);
-				val += 1 - sinval*sinval;
-			}
+			//{
+			//	auto sinval = sin(3.1415926535897932384626433832795 * x / y);
+			//	val += 1 - sinval*sinval;
+			//}
+			//
+			//if (val > 0)
+			//	setpix(j - offset, i, 255 * val);
+
+
+			auto val = modulity((n + log10(n)*n*i), cbrt(sqrt(sqrt(n)+sqrt(i)+sin(n+i)+log(i)+log10(n)*n*i))) + 1;
 
 			if (val > 0)
-				setpix(j - offset, i, 255 * val);
+				setpix(j - offset, i, 255 / val);
 		}
 	}
 	lodepng::encode("pics/sympho.png", img, w, h);
