@@ -67,6 +67,36 @@ vec2 spiral_index_to_pos(int i) {
 int linearized_divisor_plot[COUNT];
 int special_col[COUNT];
 
+void arithm_spiral() {
+	setwh(SIDE, SIDE);
+
+	int dir = 0;
+	int x= SIDE /2, y= SIDE /2;
+
+	for (int n = 1; n < 9500; ++n) {
+		bool ispri = is_prime_lookup[n];
+
+		for (int k = 1; k <= n; ++k) {
+			auto val = gcd_length(n, k);
+			
+			if(val)
+				setpix(x, y, 255/val);
+
+			// if(val && ispri)
+			// 	setpix(x, y, 255, 0, 0);
+
+			if (dir == 0) ++x;
+			if (dir == 1) ++y;
+			if (dir == 2) --x;
+			if (dir == 3) --y;
+		}
+		++dir;
+		dir %= 4;
+	}
+
+	lodepng::encode("pics/arithm_spiral.png", img, w, h);
+}
+
 void spiral() {
 	std::fill(linearized_divisor_plot, linearized_divisor_plot + COUNT, 0);
 	std::fill(special_col, special_col + COUNT, 0);

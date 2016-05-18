@@ -85,7 +85,7 @@ int main() {
 
 	//run_modulity_cgp();
 	//run_single_prime_cgp();
-	spiral();
+	arithm_spiral();
 	return 0;
 
 	struct parameters *params = NULL;
