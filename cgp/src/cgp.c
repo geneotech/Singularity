@@ -1647,9 +1647,15 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	}
 
 	/* pi */
-	else if (strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "pi", FUNCTIONNAMELENGTH) == 0 ) {
+	else if (strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "pi", FUNCTIONNAMELENGTH) == 0) {
 
 		fprintf(fp, "\\pi");
+	}
+
+	/* e */
+	else if (strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "e", FUNCTIONNAMELENGTH) == 0) {
+
+		fprintf(fp, "e");
 	}
 
 	/* 0 */

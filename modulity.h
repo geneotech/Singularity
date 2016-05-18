@@ -1,4 +1,5 @@
 #pragma once
 
-int modulity(int n, int d);
-int gcd_length(int a, int b);
+long long modulity(long long n, long long d);
+long long gcd_length(long long a, long long b);
+long long gcd(long long u, long long v);

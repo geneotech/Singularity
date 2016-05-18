@@ -48,6 +48,12 @@
     <ClCompile Include="tests\spiral.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="low_frequency_inversion_field.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\factorizator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h">

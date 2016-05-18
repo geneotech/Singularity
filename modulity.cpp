@@ -1,7 +1,7 @@
 #include "modulity.h"
 
-int modulity(int n, int d) {
-	int moduli_cnt = 0;
+long long modulity(long long n, long long d) {
+	long long moduli_cnt = 0;
 
 	while (d) {
 		auto res = n % d;
@@ -16,14 +16,23 @@ int modulity(int n, int d) {
 	return moduli_cnt;
 }
 
-int
-gcd_length(int a, int b)
+long long
+gcd_length(long long a, long long b)
 {
-	int l = 0;
-	int c;
+	long long l = 0;
+	long long c;
 	while (a != 0) {
 		c = a; a = b%a;  b = c;
 		l++;
 	}
 	return l;
+}
+
+long long gcd(long long u, long long v) {
+	while (v != 0) {
+		long long r = u % v;
+		u = v;
+		v = r;
+	}
+	return u;
 }
