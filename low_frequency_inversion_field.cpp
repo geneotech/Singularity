@@ -22,10 +22,13 @@ void _reportLFIFChromo(struct chromosome* bestChromo) {
 	auto dot = ss.str() + ".dot";
 	auto tex = ss.str() + ".tex";
 	auto png = ss.str() + ".png";
+	auto chromo = ss.str() + ".chromo";
 
 	saveChromosomeDot(bestChromo, 0, dot.c_str());
 	if (!recurrent)
 		saveChromosomeLatex(bestChromo, 0, tex.c_str());
+
+	saveChromosome(bestChromo, chromo.c_str());
 
 	std::cout << "Active nodes:" << getActiveNodes(bestChromo) << std::endl;
 }
@@ -50,7 +53,8 @@ double LFIFFitness(struct parameters *params, struct chromosome *chromo, struct 
 
 	static thread_local double in[2];
 
-	for (int i = firsttrial; i< trialcnt; i++) {
+	//for (int i = firsttrial; i< trialcnt; i++) {
+	for (int i = 0; i< 200; i++) {
 		//int x = randval(1, 1920);
 		//int y = randval(1, x);
 
@@ -76,7 +80,10 @@ double LFIFFitness(struct parameters *params, struct chromosome *chromo, struct 
 full_factors_info factorizations[FACTORED_COUNT];
 using namespace std;
 
+static double _lG(const int numInputs, const double *inputs, const double *connectionWeights) {
 
+	return std::lgamma(inputs[0]);
+}
 
 static double _M(const int numInputs, const double *inputs, const double *connectionWeights) {
 	auto sm = std::min(inputs[0], inputs[1]);
@@ -144,7 +151,7 @@ void run_low_frequency_inversion_field() {
 	reportChromo = _reportLFIFChromo;
 
 	int numInputs = 2;
-	int numNodes = 100;
+	int numNodes = 300;
 	int numOutputs = 2;
 	int nodeArity = 2;
 
@@ -157,10 +164,10 @@ void run_low_frequency_inversion_field() {
 	setNumThreads(params, 6);
 
 	//addNodeFunction(params, "add,sub,mul,div,sin,cos,sqrt,sq,ln,1,pi,e");
-	addNodeFunction(params, "add,sub,mul,div,sin,sqrt,ln,1,pi");
-	addCustomNodeFunction(params, _M, "M", 2);
-	addCustomNodeFunction(params, _gcd, "gcd", 2);
-	addCustomNodeFunction(params, _gcd_l , "gcd_l", 2);
+	addNodeFunction(params, "add,sub,mul,div,sin,cos,ln,1,atan");
+	//addCustomNodeFunction(params, _lG, "lG", 1);
+	//addCustomNodeFunction(params, _gcd, "gcd", 2);
+	//addCustomNodeFunction(params, _gcd_l , "gcd_l", 2);
 
 	setTargetFitness(params, targetFitness);
 

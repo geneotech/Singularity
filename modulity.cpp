@@ -17,13 +17,14 @@ long long modulity(long long n, long long d) {
 }
 
 long long
-gcd_length(long long a, long long b)
+gcd_length(long long u, long long v)
 {
-	long long l = 0;
-	long long c;
-	while (a != 0) {
-		c = a; a = b%a;  b = c;
-		l++;
+	unsigned long long l = 0;
+	while (v != 0) {
+		long long r = u % v;
+		u = v;
+		v = r;
+		++l;
 	}
 	return l;
 }

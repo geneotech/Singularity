@@ -195,6 +195,10 @@ static double _hyperbolicTangent(const int numInputs, const double *inputs, cons
 static double _ln(const int numInputs, const double *inputs, const double *connectionWeights);
 static double _e(const int numInputs, const double *inputs, const double *connectionWeights);
 
+static double _atan(const int numInputs, const double *inputs, const double *connectionWeights) {
+
+	return atan2(inputs[1], inputs[0]);
+}
 /* other */
 static double randDecimal(void);
 static int randInt(int n);
@@ -424,6 +428,9 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 	}
 	else if (strncmp(functionName, "ln", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _ln, "ln", 1);
+	}
+	else if (strncmp(functionName, "atan", FUNCTIONNAMELENGTH) == 0) {
+		addCustomNodeFunction(params, _atan, "atan", 2);
 	}
 
 	/* Boolean logic gates */
@@ -3823,6 +3830,7 @@ static double _ln(const int numInputs, const double *inputs, const double *conne
 
 	return log(inputs[0]);
 }
+
 
 static double _e(const int numInputs, const double *inputs, const double *connectionWeights) {
 

@@ -86,7 +86,9 @@ int main() {
 	//run_modulity_cgp();
 	//run_single_prime_cgp();
 	//spiral();
-	run_low_frequency_inversion_field();
+	//run_low_frequency_inversion_field();
+	//analyticmodulity();
+	hyperbolalattice();
 	return 0;
 
 	struct parameters *params = NULL;

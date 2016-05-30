@@ -120,7 +120,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cgp\src\cgp.c" />
+    <ClCompile Include="hyperbolalattice.cpp" />
     <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="math\rects.cpp" />
+    <ClCompile Include="math\vec2.cpp" />
+    <ClCompile Include="misc\randval.cpp" />
     <ClCompile Include="modulities_evolution.cpp" />
     <ClCompile Include="modulity.cpp" />
     <ClCompile Include="primes.cpp" />
@@ -137,6 +141,11 @@
     <ClInclude Include="cgp\src\cgp.h" />
     <ClInclude Include="img.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="math\matrix.h" />
+    <ClInclude Include="math\rects.h" />
+    <ClInclude Include="math\vec2.h" />
+    <ClInclude Include="math\vec2declare.h" />
+    <ClInclude Include="misc\randval.h" />
     <ClInclude Include="modulity.h" />
     <ClInclude Include="primes.h" />
     <ClInclude Include="prime_evolution.h" />

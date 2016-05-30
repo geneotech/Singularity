@@ -2,6 +2,18 @@
 #include "../img.h"
 #include "../modulity.h"
 
+long long
+_MM(long long a, long long b)
+{
+	while (true) {
+		if (!(a%b)) {
+			return b;
+		}
+		b = a%b;
+	}
+}
+#include <fstream>
+#include <iostream>
 void analyticmodulity() {
 
 	//for (int i = 2; i < 100; ++i) {
@@ -28,7 +40,23 @@ void analyticmodulity() {
 	int height = 1080;
 	int xscale = 1;
 
+	//_MM(13, 70);
+	//gcd_length(13, 70);
+	//std::cout << 27 % 8;
+	////std::cin >> xscale;
+	//
 	setwh(width, height);
+	//
+	//{
+	//	std::ofstream gen_file("gcds.txt");
+	//
+	//	for (int i = 1; i < 1000; ++i) {
+	//		for (int j = 1; j < 1000; ++j) {
+	//			if(i >= j && gcd_length(i, j) != _MM(i, j)+1)
+	//				gen_file << i << " " << j << " " << gcd_length(i, j) << " " << _MM(i, j) << std::endl;
+	//		}
+	//	}
+	//}
 
 	for (int j = offset, n = 0; j <= width + offset; ++j, n = (j)) {
 		for (int i = 1; i <= std::min(n, height); ++i) {
@@ -51,26 +79,26 @@ void analyticmodulity() {
 			//	setpix(j - offset, i, 255 * val);
 
 
-			auto val = modulity((n + log10(n)*n*i), cbrt(sqrt(sqrt(n)+sqrt(i)+sin(n+i)+log(i)+log10(n)*n*i))) + 1;
+			auto val = _MM(n, i);
 
-			if (val > 0)
+			if (val > 1)
 				setpix(j - offset, i, 255 / val);
 		}
 	}
 	lodepng::encode("pics/sympho.png", img, w, h);
 
-	setwh(width, height);
-
-	for (int j = offset, n = 0; j <= width + offset; ++j, n = (j)) {
-		for (int i = 1; i <= std::min(n, height); ++i) {
-			double x = n;
-			double y = i;
-
-			auto val = (n % i) + 1;
-
-			if (val > 0)
-				setpix(j - offset, i, 255 / val);
-		}
-	}
-	lodepng::encode("pics/modulo.png", img, w, h);
+	//setwh(width, height);
+	//
+	//for (int j = offset, n = 0; j <= width + offset; ++j, n = (j)) {
+	//	for (int i = 1; i <= std::min(n, height); ++i) {
+	//		double x = n;
+	//		double y = i;
+	//
+	//		auto val = _MM(n, i);
+	//
+	//		if (val > 0)
+	//			setpix(j - offset, i, 255 / val);
+	//	}
+	//}
+	//lodepng::encode("pics/modulo.png", img, w, h);
 }
