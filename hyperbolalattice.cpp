@@ -22,8 +22,8 @@ double eps = 0.0001;
 
 void hyperbolalattice() {
 	int offset = 1;
-	int width = 1980;
-	int height = 1080;
+	int width = 500;
+	int height = 300;
 
 	double pixels_per_square = 100;
 
@@ -54,6 +54,31 @@ void hyperbolalattice() {
 
 	int maxs = 3;
 
+	//for (double m = from; m <= to; m += 0.05) {
+	//	//for (double m = 2; m < 11;m+=0.05) {
+	//	setwh(width, height);
+	//	for (int x = 0; x < width; ++x) {
+	//		for (int y = 0; y < height; ++y) {
+	//			setpix(x * pixels_per_square, y * pixels_per_square, 255, 0, 0);
+	//		}
+	//	}
+	//
+	//	for (double x = interval; x < width / pixels_per_square; x += interval) {
+	//		const double fx = x;
+	//		const double val = m / fx;
+	//
+	//		double dist = m / x - floor(m / x);
+	//		dist *= 10;
+	//		setpix(x* pixels_per_square, dist* pixels_per_square, 255);
+	//		setpix(x* pixels_per_square, val* pixels_per_square, 0, 255, 0);
+	//	}
+	//	std::ostringstream ss;
+	//	ss << "pics/trial/frac";
+	//	ss << std::fixed << m;
+	//	ss << ".png";
+	//	lodepng::encode(ss.str(), img, w, h);
+	//}
+
 	for (double m = from; m <= to; m += 0.05) {
 		//for (double m = 2; m < 11;m+=0.05) {
 		setwh(width, height);
@@ -64,66 +89,86 @@ void hyperbolalattice() {
 		}
 
 		for (double x = interval; x < width/pixels_per_square; x += interval) {
-			const double val = m / x;
+			const double fx = x;
+			const double val = m / fx;
 
-			vec2 p(x, val);
+			vec2 p(fx, val);
+
+			//double dist = 0.0;
+			//
+			//for (int t = 1; t <= m; ++t) {
+			//	double d = sin(PId*t / x);
+			//
+			//	if (d < eps) {
+			//		d = eps;
+			//	}
+			//
+			//	dist += 1/d;
+			//}
+			//
+			//dist /= 5000.0;
 			vec2 ip(floor(p.x), floor(p.y));
-
+			
 			double dist = 0.0;
 			
 			{
 				double d = (p - ip).length_sq();
-
-				if (d > eps)
-					dist += 1 / d;
+			
+				if (d < eps)
+					d = eps;
+				
+				dist += 1 / d;
 			}
-
+			
 			int s = 3;
 			bool was_bigger_than_epsilon = false;
-
+			
 			while(true) {
 				was_bigger_than_epsilon = false;
-
+			
 				int corner_center_offset = (s - 1) / 2;
 				int cco = corner_center_offset;
-
+			
 				for (int ss = 0; ss < s-1; ++ss) {
 					vec2 lt(-cco, cco - ss);
 					vec2 lb(-cco + ss, -cco);
 					vec2 rb(cco, -cco + ss);
 					vec2 rt(cco - ss, cco);
-
+			
 					vec2 points[4] = { ip+lt, ip + lb, ip + rb, ip + rt };
-
+			
 					for (auto& pp : points) {
+						//if (pp.x < 0 || pp.y < 0)
+						//	continue;
+
 						double d = (pp - p).length_sq();
 						d = 1 / d;
-
+			
 						if (d > eps) {
 							was_bigger_than_epsilon = true;
 						}
-
+			
 						dist += d;
 					}
 				}
-
+			
 				if (!was_bigger_than_epsilon)
 					break;
-
+			
 				s += 2;
 			}
-
+			
 			if (s > maxs) {
 				maxs = s;
 			}
-
-			dist /= 20.0;
+			
+			dist /= 200.0;
 
 			setpix(x* pixels_per_square, dist* pixels_per_square, 255);
 			setpix(x* pixels_per_square, val* pixels_per_square, 0, 255, 0);
 		}
 		std::ostringstream ss;
-		ss << "pics/latticeseries";
+		ss << "pics/trial/latticeseries";
 		ss << std::fixed << m;
 		ss << ".png";
 		lodepng::encode(ss.str(), img, w, h);
