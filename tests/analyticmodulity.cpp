@@ -13,6 +13,7 @@ _MM(long long a, long long b)
 	}
 }
 #include <fstream>
+#define PId 3.1415926535897932384626433832795
 #include <iostream>
 void analyticmodulity() {
 
@@ -62,6 +63,8 @@ void analyticmodulity() {
 		for (int i = 1; i <= std::min(n, height); ++i) {
 			double x = n;
 			double y = i;
+			x /= 100;
+			y /= 100;
 
 			//double val = 0.0;
 
@@ -79,13 +82,17 @@ void analyticmodulity() {
 			//	setpix(j - offset, i, 255 * val);
 
 
-			auto val = _MM(n, i);
+			//auto val = modulity(n, i) + 1;
+			auto a = sin(PId*x);
+			auto b = sin(PId * y / x);
+			auto val = a*a + b*b;
+			//val += 2;
 
-			if (val > 1)
-				setpix(j - offset, i, 255 / val);
+			if (val != 0)
+				setpix(j - offset, i, val*100);
 		}
 	}
-	lodepng::encode("pics/sympho.png", img, w, h);
+	lodepng::encode("newpics/sympho.png", img, w, h);
 
 	//setwh(width, height);
 	//

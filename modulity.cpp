@@ -37,3 +37,13 @@ long long gcd(long long u, long long v) {
 	}
 	return u;
 }
+
+#include <cmath>
+double gcdd(double u, double v) {
+	while (v != 0) {
+		double r = fmod(u, v);
+		u = v;
+		v = r;
+	}
+	return u;
+}
