@@ -87,8 +87,18 @@ int main() {
 	//run_single_prime_cgp();
 	//spiral();
 	//run_low_frequency_inversion_field();
-	//analyticmodulity();
-	hyperbolalattice();
+	analyticmodulity();
+	//hyperbolalattice();
+	
+	
+
+	//for (int i = 2; i < 103; ++i) {
+	//	cout << (103*107) % i << " " << 103 % i << endl;
+	//}
+	//
+	//int abccc;
+	//cin >> abccc;
+
 	return 0;
 
 	struct parameters *params = NULL;

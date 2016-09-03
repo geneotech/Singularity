@@ -53,10 +53,10 @@ struct plotter {
 void hyperbolalattice() {
 	int offset = 1;
 	double yoff = 0;
-	int width = 1980;
+	int width = 1920;
 	int height = 1080;
 
-	double pixels_per_square = 90;
+	double pixels_per_square = width/3;
 
 	setwh(width, height);
 
@@ -75,11 +75,9 @@ void hyperbolalattice() {
 	//ss << ".png";
 	//lodepng::encode(ss.str(), img, w, h);
 
-	double dd[4];
-	vec2 vv[4];
 
-	double from = 11*17;
-	double to = 11 * 17;
+	double from = 11;
+	double to = 11;
 
 	for (double m = from; m <= to; m += 0.05) {
 		//for (double m = 2; m < 11;m+=0.05) {
@@ -97,14 +95,19 @@ void hyperbolalattice() {
 
 		for (int x = 0; x < width; ++x) {
 			double fx = x / pixels_per_square;
+
+			static thread_local auto eval = [](double fx, double m) {
+			double dd[4];
+			vec2d vv[4];
+
 			const double val = m / fx;
 
-			vec2 lb(floor(fx), floor(val));
-			vec2 lt(lb.x, lb.y + 1);
-			vec2 rb(lb.x + 1, lb.y);
-			vec2 rt(lb.x + 1, lb.y + 1);
+			vec2d lb(floor(fx), floor(val));
+			vec2d lt(lb.x, lb.y + 1);
+			vec2d rb(lb.x + 1, lb.y);
+			vec2d rt(lb.x + 1, lb.y + 1);
 
-			vec2 p(fx, val);
+			vec2d p(fx, val);
 
 			vv[0] = lb;
 			vv[1] = lt;
@@ -122,17 +125,17 @@ void hyperbolalattice() {
 			//dist *= 20;
 
 
-			vec2 c = lb;// vv[mindist];
+			vec2d c = lb;// vv[mindist];
 
-			vec2 q[8] = {
-				c + vec2(1, 0),
-				c + vec2(1, -1),
-				c + vec2(0, -1),
-				c + vec2(-1, -1),
-				c + vec2(-1, 0),
-				c + vec2(-1, 1),
-				c + vec2(0, 1),
-				c + vec2(1, 1)
+			vec2d q[8] = {
+				c + vec2d(1, 0),
+				c + vec2d(1, -1),
+				c + vec2d(0, -1),
+				c + vec2d(-1, -1),
+				c + vec2d(-1, 0),
+				c + vec2d(-1, 1),
+				c + vec2d(0, 1),
+				c + vec2d(1, 1)
 			};
 
 			double product = (p - c).length();
@@ -147,11 +150,45 @@ void hyperbolalattice() {
 			dd[3] = std::max(dd[3], eps);
 
 			double dist = product;
-			dist = dd[0] * dd[1] * dd[2] * dd[3] * 10;
-			//dist = (1 / dd[0] + 1 / dd[1] + 1 / dd[2] + 1 / dd[3]);
+			dist = 0;
+			dist += 1 / (dd[0]);
+			dist += 1 / (dd[1]);
+			dist += 1 / (dd[2]);
+			dist += 1 / (dd[3]);
+			//dist = 0;
+			int s = 4;
+			double corner_center_offset = (s - 1) / 2;
+			double cco = corner_center_offset;
+			vec2d ccc = lb + vec2d(0.5, 0.5);
+			
+			//for (int ss = 0; ss < s - 1; ++ss) {
+			//	vec2 sq_lt(-cco, cco - ss);
+			//	vec2 sq_lb(-cco + ss, -cco);
+			//	vec2 sq_rb(cco, -cco + ss);
+			//	vec2 sq_rt(cco - ss, cco);
+			//
+			//	vec2 points[4] = { ccc + sq_lt, ccc + sq_lb, ccc + sq_rb, ccc + sq_rt };
+			//
+			//	for (auto& pp : points) {
+			//		dist += 1/(p - pp).length();
+			//	}
+			//}
 
-			fmx.plot(x, dist* pixels_per_square, 255);
-			hyper.plot(x, val* pixels_per_square, 0, 255, 0);
+			//dist = (1 / dd[0] + 1 / dd[1] + 1 / dd[2] + 1 / dd[3]);
+			//dist = dd[mindist];
+
+			dist /= 10;
+			return dist;
+			};
+
+			
+			fmx.plot(x, eval(fx, m)* pixels_per_square, 255);
+			
+			//vec2 p1(fx, eval(fx, m));
+			//fx += 1;
+			//vec2 p2(fx, eval(fx, m));
+
+			hyper.plot(x, (m/fx)* pixels_per_square, 0, 255, 0);
 		}
 
 		std::ostringstream ss;

@@ -133,7 +133,6 @@
     <ClCompile Include="single_prime_evolution.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="tests\analyticmodulity.cpp" />
-    <ClCompile Include="low_frequency_inversion_field.cpp" />
     <ClCompile Include="tests\factorizator.cpp" />
     <ClCompile Include="tests\spiral.cpp" />
   </ItemGroup>
