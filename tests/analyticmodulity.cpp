@@ -12,6 +12,7 @@ _MM(long long a, long long b)
 		b = a%b;
 	}
 }
+
 #include <fstream>
 #define PId 3.1415926535897932384626433832795
 #include <iostream>
@@ -20,9 +21,67 @@ _MM(long long a, long long b)
 #include "../factorizator.h"
 #include <complex>
 
+typedef std::complex<long double> cc;
+
+static const int g = 7;
+static const double p[g + 2] = { 0.99999999999980993, 676.5203681218851,
+-1259.1392167224028, 771.32342877765313, -176.61502916214059,
+12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6,
+1.5056327351493116e-7 };
+
+cc cgamma(cc z)
+{
+	if (real(z)<0.5) {
+		return cc(PId) / (sin(cc(PId)*z)*cgamma(cc(1.0) - z));
+	}
+	z -= 1.0;
+	cc x = p[0];
+	for (int i = 1; i<g + 2; i++) {
+		x += cc(p[i]) / (z + cc(i, 0));
+	}
+	cc t = z + cc(g + 0.5);
+	return cc(sqrt(2 * PId)) * pow(t, z + cc(0.5)) * exp(-t) * x;
+}
+
+
+cc zeta_alternating(float xx, float yy, const int iters) {
+	cc expo(xx, yy);
+	cc mult = cc(1, 0) - (cc(2, 0) / pow(cc(2, 0), expo));
+
+	cc rhs;
+	for (int i = 1; i < iters; ++i) {
+		auto term = cc(1, 0) / pow(cc(i, 0), expo);
+
+		if (i % 2 == 0)
+			rhs -= term;
+		else
+			rhs += term;
+	}
+
+	return rhs / mult;
+}
+
+cc zeta(float xx, float yy, const int iters = 6260);
+
+cc zeta(cc s, const int iters = 6260) {
+	return zeta(real(s), imag(s), iters);
+}
+
+cc zeta(float xx, float yy, const int iters) {
+	cc s(xx, yy);
+
+	if (xx < 0.5f) {
+		return std::pow(2, s) * std::pow(PId, s - cc(1)) * std::sin(cc(PId / 2) * s) * cgamma(cc(1) - s) * zeta(cc(1) - s);
+	}
+	else
+		return zeta_alternating(xx, yy, iters);
+}
+
 template<class... Args>
 void Line( float x1,  float y1,  float x2,  float y2, Args... args)
 {
+	if (!inbounds(x1, y1) && !inbounds(x2, y2)) return;
+
 	// Bresenham's line algorithm
 	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
 	if (steep)
@@ -66,6 +125,12 @@ void Line( float x1,  float y1,  float x2,  float y2, Args... args)
 	}
 }
 #include "../math/vec2.h"
+template<class... Args>
+void makecross(int x, int y, Args... args) {
+	Line(x - 10, y, x + 10, y, args...);
+	Line(x, y- 10, x, y + 10, args...);
+}
+
 void analyticmodulity() {
 
 	//for (int i = 2; i < 100; ++i) {
@@ -208,89 +273,25 @@ void analyticmodulity() {
 
 		// zeta trajectory along strip
 		// single image samples all critical x for given y
-
-		// float from = 0;
-		// float to = 100.f;
-		// int samples = 240;
-		// int imgi = 0;
-		// float maxsample = 8.f;
-		// 
-		// for (float y = from; y < to; y += 0.05f) {
-		// 	setwh(width, height);
-		// 	
-		// 	Line(width / 2 - 10, height / 2 , width / 2 + 10, height / 2 , 255, 0, 0);
-		// 	Line(width/2 , height/2 -10, width / 2 , height / 2 + 10, 255, 0, 0);
-		// 
-		// 	cc prevcomplex;
-		// 
-		// 	int prev_x = width / 2;
-		// 	int prev_y = height / 2;
-		// 
-		// 	bool wasprev = false;
-		// 
-		// 	for (int c = 0; c < samples; ++c)
-		// 	{
-		// 		float xx = (maxsample /samples) * c;
-		// 		float yy = y;
-		// 
-		// 		cc expo(xx, yy);
-		// 		auto mult = cc(1, 0) - (cc(2, 0) / pow(cc(2, 0), expo));
-		// 
-		// 		int iters = 160;
-		// 
-		// 		cc rhs;
-		// 		for (int i = 1; i < iters; ++i) {
-		// 			auto term = cc(1, 0) / pow(cc(i, 0.01), expo);
-		// 
-		// 			if (i % 2 == 0)
-		// 				rhs -= term;
-		// 			else
-		// 				rhs += term;
-		// 		}
-		// 
-		// 		auto result = rhs / mult;
-		// 
-		// 		int new_x = result.real()*150.f + width / 2;
-		// 		int new_y = result.imag()*150.f + height / 2;
-		// 
-		// 		if (wasprev) {
-		// 			if (c > 0 && (maxsample / samples) * c > 0.5f && (maxsample / samples) * (c - 1) <= 0.5f)
-		// 				Line(prev_x, prev_y, new_x, new_y, 255);
-		// 			else if (c > 0 && (maxsample / samples) * c > 1.0f && (maxsample / samples) * (c - 1) <= 1.0f)
-		// 				Line(prev_x, prev_y, new_x, new_y, 0, 0, 255);
-		// 			else
-		// 				Line(prev_x, prev_y, new_x, new_y, 0, 255, 0);
-		// 		}
-		// 		wasprev = true;
-		// 
-		// 		prevcomplex = result;
-		// 
-		// 		prev_x = new_x;
-		// 		prev_y = new_y;
-		// 	}
-		// 
-		// 	std::ostringstream ss;
-		// 	ss << "newpics2/big1/zeta";
-		// 	ss << imgi;
-		// 	ss << "(";
-		// 	ss << y;
-		// 	ss << ")";
-		// 	ss << ".png";
-		// 	lodepng::encode(ss.str(), img, w, h);
-		// 
-		// 	imgi += 1;
-		// }
-
-		// zeta trajectory along strip
-		// single image samples some x for several y
-
-		 float from = 0;
-		 float to = 100.f;
+	
+		 float from = -1;
+		 float to = 100;
 		 int samples = 240;
 		 int imgi = 0;
 		 float maxsample = 8.f;
 		 
-		 for (int c = 0; c < samples; ++c) {
+		 std::cout << "zeta(-7.f, 7.f) = " << zeta(-7.f, 7.f) << std::endl;
+		 std::cout << "zeta(1, 7.f)    = " << zeta(1, 7.f) << std::endl;
+		 std::cout << "zeta(0, 7.f)    = " << zeta(0, 7.f) << std::endl;
+		 std::cout << "zeta(0.1, 7.f)  = " << zeta(0.1, 7.f) << std::endl;
+		 std::cout << "zeta(0.2, 7.f)  = " << zeta(0.2, 7.f) << std::endl;
+		 std::cout << "zeta(0.3, 7.f)  = " << zeta(0.3, 7.f) << std::endl;
+		 std::cout << "zeta(0.4, 7.f)  = " << zeta(0.4, 7.f) << std::endl;
+		 std::cout << "zeta(0.5, 7.f)  = " << zeta(0.5, 7.f) << std::endl;
+		 std::cout << "zeta(-1, 7.f)   = " << zeta(-1, 7.f) << std::endl;
+		 std::cout << "zeta(-2, 7.f)   = " << zeta(-2, 7.f)  << std::endl;
+
+		 for (float y = from; y < to; y += 0.05f) {
 		 	setwh(width, height);
 		 	
 		 	Line(width / 2 - 10, height / 2 , width / 2 + 10, height / 2 , 255, 0, 0);
@@ -302,20 +303,91 @@ void analyticmodulity() {
 		 	int prev_y = height / 2;
 		 
 		 	bool wasprev = false;
+
+			auto critline = zeta(0.5f, y);
+			auto critbound0 = zeta(0.0f, y);
+			auto critbound1 = zeta(1.0f, y);
+		 
+		 	for (int c = -samples*4; c < samples; ++c)
+		 	{
+		 		float xx = (maxsample /samples) * c;
+		 		float yy = y;
+		 
+		 		auto result = zeta(xx, yy);
+		 
+		 		int new_x = result.real()*150.f + width / 2;
+		 		int new_y = result.imag()*150.f + height / 2;
+		 
+		 		if (wasprev) {
+		 			//if (c > 0 && (maxsample / samples) * c > 0.5f && (maxsample / samples) * (c - 1) <= 0.5f)
+		 			//	Line(prev_x, prev_y, new_x, new_y, 255);
+					//else if (c > 0 && (maxsample / samples) * c > 1.0f && (maxsample / samples) * (c - 1) <= 1.0f)
+					//	Line(prev_x, prev_y, new_x, new_y, 0, 0, 255);
+					//else if (c == 0)
+					//	Line(prev_x, prev_y, new_x, new_y, 0, 0, 255);
+		 			//else
+		 				Line(prev_x, prev_y, new_x, new_y, 0, 255, 0);
+		 		}
+		 		wasprev = true;
+		 
+		 		prevcomplex = result;
+		 
+		 		prev_x = new_x;
+		 		prev_y = new_y;
+		 	}
+			
+			makecross(critline.real()*150.f + width / 2, critline.imag()*150.f + height / 2, 255);
+			makecross(critbound0.real()*150.f + width / 2, critbound0.imag()*150.f + height / 2, 255, 0, 255);
+			makecross(critbound1.real()*150.f + width / 2, critbound1.imag()*150.f + height / 2, 255, 0, 255);
+
+		 	std::ostringstream ss;
+		 	ss << "P:/newpics/big2/zeta";
+		 	ss << imgi;
+		 	ss << "(";
+		 	ss << y;
+		 	ss << ")";
+		 	ss << ".png";
+		 	lodepng::encode(ss.str(), img, w, h);
+		 
+		 	imgi += 1;
+		 }
+		 
+		//zeta trajectory along strip
+		//single image samples given x for several y
+/*
+		 float from = 0;
+		 float to = 100.f;
+		 int samples = 100;
+		 int imgi = 100;
+		 float maxsample = 7.f;
+		 
+		 for (int c = 0; c < samples; ++c) {
+		 	setwh(width, height);
+		 	
+		 	Line(width / 2 - 10, height / 2 , width / 2 + 10, height / 2 , 255, 0, 0);
+		 	Line(width/2 , height/2 -10, width / 2 , height / 2 + 10, 255, 0, 0);
+		 
+		 	cc prevcomplex;
+		 
+		 	int prev_x = width / 2;
+		 	int prev_y = height / 2;
+		
+			float xx = (maxsample / samples) * c + 1.f;
+		 
+		 	bool wasprev = false;
 			
 			for (float y = from; y < to; y += 0.05f)
 		 	{
-		 		float xx = (maxsample /samples) * c;
 		 		float yy = y;
 		 
 		 		cc expo(xx, yy);
 		 		auto mult = cc(1, 0) - (cc(2, 0) / pow(cc(2, 0), expo));
 		 
-		 		int iters = 160;
+		 		int iters = 6260;
 		 
 		 		cc rhs;
 		 		for (int i = 1; i < iters; ++i) {
-		 			auto term = cc(1, 0) / pow(cc(i, 0.01), expo);
+		 			auto term = cc(1, 0) / pow(cc(i, 0), expo);
 		 
 		 			if (i % 2 == 0)
 		 				rhs -= term;
@@ -340,17 +412,17 @@ void analyticmodulity() {
 		 	}
 		 
 		 	std::ostringstream ss;
-		 	ss << "newpics2/traj/zeta";
+		 	ss << "P:/newpics/traj/zeta";
 		 	ss << imgi;
 		 	ss << "(";
-		 	ss << y;
+		 	ss << xx;
 		 	ss << ")";
 		 	ss << ".png";
 		 	lodepng::encode(ss.str(), img, w, h);
 		 
 		 	imgi += 1;
 		 }
-
+		 */
 
 	//	for (unsigned long long x = 1; x < width; ++x) {
 	//		for (unsigned long long y = 1; y < height; ++y) {

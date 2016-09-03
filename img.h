@@ -8,8 +8,12 @@ static int w = 3302;
 static int h = 400;
 static std::vector<unsigned char> img;
 
+static bool inbounds(int x, int y) {
+	return !(x >= w || y >= h || y < 0 || x < 0);
+}
+
 static void setpix(int x, int y, int val) {
-	if (x >= w || y >= h || y < 0 || x < 0) return;
+	if (!inbounds(x, y)) return;
 
 	img[(w * (h - y - 1) + x) * 4] = val;
 	img[(w * (h - y - 1) + x) * 4 + 1] = val;
@@ -17,14 +21,14 @@ static void setpix(int x, int y, int val) {
 }
 
 static void setpix(int x, int y, int r, int g, int b) {
-	if (x >= w || y >= h || y < 0 || x < 0) return;
+	if (!inbounds(x, y)) return;
 	img[(w * (h - y - 1) + x) * 4] = r;
 	img[(w * (h - y - 1) + x) * 4 + 1] = g;
 	img[(w * (h - y - 1) + x) * 4 + 2] = b;
 }
 
 static void setpixrgb(int x, int y, unsigned RGBint) {
-	if (x >= w || y >= h || y < 0 || x < 0) return;
+	if (!inbounds(x, y)) return;
 	img[(w * (h - y - 1) + x) * 4] = RGBint & 255;
 	img[(w * (h - y - 1) + x) * 4 + 1] = (RGBint >> 8) & 255;
 	img[(w * (h - y - 1) + x) * 4 + 2] = (RGBint >> 16) & 255;
