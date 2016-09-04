@@ -155,6 +155,7 @@
     <ClInclude Include="randval.h" />
     <ClInclude Include="tests\tests.h" />
     <ClInclude Include="typesafe_sprintf.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

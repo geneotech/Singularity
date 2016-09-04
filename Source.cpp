@@ -106,8 +106,8 @@ int main() {
 	//run_single_prime_cgp();
 	//spiral();
 	//run_low_frequency_inversion_field();
-	analyticmodulity();
-	//hyperbolalattice();
+	//analyticmodulity();
+	hyperbolalattice();
 	
 	
 

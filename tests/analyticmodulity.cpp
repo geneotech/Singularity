@@ -13,148 +13,7 @@ _MM(long long a, long long b)
 	}
 }
 
-#include <fstream>
-#define PId 3.1415926535897932384626433832795
-#include <iostream>
-
-#include "../primes.h"
-#include "../factorizator.h"
-#include <complex>
-
-typedef std::complex<long double> cc;
-
-static const int g = 7;
-static const double p[g + 2] = { 0.99999999999980993, 676.5203681218851,
--1259.1392167224028, 771.32342877765313, -176.61502916214059,
-12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6,
-1.5056327351493116e-7 };
-
-cc cgamma(cc z)
-{
-	if (real(z)<0.5) {
-		return cc(PId) / (sin(cc(PId)*z)*cgamma(cc(1.0) - z));
-	}
-	z -= 1.0;
-	cc x = p[0];
-	for (int i = 1; i<g + 2; i++) {
-		x += cc(p[i]) / (z + cc(i, 0));
-	}
-	cc t = z + cc(g + 0.5);
-	return cc(sqrt(2 * PId)) * pow(t, z + cc(0.5)) * exp(-t) * x;
-}
-
-
-cc zeta_alternating(float xx, float yy, const int iters) {
-	cc expo(xx, yy);
-	cc mult = cc(1, 0) - (cc(2, 0) / pow(cc(2, 0), expo));
-
-	cc rhs;
-	for (int i = 1; i < iters; ++i) {
-		auto term = cc(1, 0) / pow(cc(i, 0), expo);
-
-		if (i % 2 == 0)
-			rhs -= term;
-		else
-			rhs += term;
-	}
-
-	return rhs / mult;
-}
-
-cc zeta(float xx, float yy, const int iters = 6260);
-
-cc zeta(cc s, const int iters = 6260) {
-	return zeta(real(s), imag(s), iters);
-}
-
-cc zeta(float xx, float yy, const int iters) {
-	cc s(xx, yy);
-
-	if (xx < 0.5f) {
-		return std::pow(2, s) * std::pow(PId, s - cc(1)) * std::sin(cc(PId / 2) * s) * cgamma(cc(1) - s) * zeta(cc(1) - s);
-	}
-	else
-		return zeta_alternating(xx, yy, iters);
-}
-
-template<class... Args>
-void Line( float x1,  float y1,  float x2,  float y2, Args... args)
-{
-	if (!inbounds(x1, y1) && !inbounds(x2, y2)) return;
-
-	// Bresenham's line algorithm
-	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
-	if (steep)
-	{
-		std::swap(x1, y1);
-		std::swap(x2, y2);
-	}
-
-	if (x1 > x2)
-	{
-		std::swap(x1, x2);
-		std::swap(y1, y2);
-	}
-
-	const float dx = x2 - x1;
-	const float dy = fabs(y2 - y1);
-
-	float error = dx / 2.0f;
-	const int ystep = (y1 < y2) ? 1 : -1;
-	int y = (int)y1;
-
-	const int maxX = (int)x2;
-
-	for (int x = (int)x1; x<maxX; x++)
-	{
-		if (steep)
-		{
-			setpix(y, x, args...);
-		}
-		else
-		{
-			setpix(x, y, args...);
-		}
-
-		error -= dy;
-		if (error < 0)
-		{
-			y += ystep;
-			error += dx;
-		}
-	}
-}
-#include "../math/vec2.h"
-template<class... Args>
-void makecross(int x, int y, Args... args) {
-	Line(x - 10, y, x + 10, y, args...);
-	Line(x, y- 10, x, y + 10, args...);
-}
-
-
-#include "../typesafe_sprintf.h"
-#include "../glyphs.h"
-
-template<class... Args>
-void gprint(int x, int y, Args... args) {
-	std::string ss = typesafe_sprintf(args...);
-
-	for (auto l : ss) {
-		if (l == ' ')
-			l = '_';
-
-		auto& g = glyphs[l];
-
-		for (int i = 0; i < g.w; ++i) {
-			for (int j = 0; j < g.h; ++j) {
-				if(g.img[(j * g.w + i) * 4] == 0)
-					setpix(x + i, y + g.h - j - 1, 255);
-			}
-		}
-
-		x += g.w;
-	}
-}
+#include "../util.h"
 
 void analyticmodulity() {
 
@@ -178,8 +37,8 @@ void analyticmodulity() {
 
 
 	int offset = 1;
-	int width = 1280;
-	int height = 720;
+	int width = 500;
+	int height = 300;
 	int xscale = 1;
 
 	//_MM(13, 70);
@@ -301,9 +160,10 @@ void analyticmodulity() {
 	
 		 float from = -1;
 		 float to = 100;
-		 int samples = 240;
+		 int samples = 340;
 		 int imgi = 0;
-		 float maxsample = 8.f;
+		 float maxsample = 28.f;
+		 float scale = 50;
 		 
 		 std::cout << "zeta(-7.f, 7.f) = " << zeta(-7.f, 7.f) << std::endl;
 		 std::cout << "zeta(1, 7.f)    = " << zeta(1, 7.f) << std::endl;
@@ -316,7 +176,7 @@ void analyticmodulity() {
 		 std::cout << "zeta(-1, 7.f)   = " << zeta(-1, 7.f) << std::endl;
 		 std::cout << "zeta(-2, 7.f)   = " << zeta(-2, 7.f)  << std::endl;
 
-		 for (float y = from; y < to; y += 0.05f) {
+		 for (float y = from; y < to; y += 0.1f) {
 		 	setwh(width, height);
 		 	
 		 	Line(width / 2 - 10, height / 2 , width / 2 + 10, height / 2 , 255, 0, 0);
@@ -333,15 +193,15 @@ void analyticmodulity() {
 			auto critbound0 = zeta(0.0f, y);
 			auto critbound1 = zeta(1.0f, y);
 		 
-		 	for (int c = -samples*4; c < samples; ++c)
+		 	for (int c = -samples*32; c < 40; ++c)
 		 	{
 		 		float xx = (maxsample /samples) * c;
 		 		float yy = y;
 		 
-		 		auto result = zeta(xx, yy);
+		 		auto result = spiral(xx, yy);
 		 
-		 		int new_x = result.real()*150.f + width / 2;
-		 		int new_y = result.imag()*150.f + height / 2;
+		 		int new_x = result.real()*scale + width / 2;
+		 		int new_y = result.imag()*scale + height / 2;
 		 
 		 		if (wasprev) {
 		 			//if (c > 0 && (maxsample / samples) * c > 0.5f && (maxsample / samples) * (c - 1) <= 0.5f)
@@ -361,9 +221,9 @@ void analyticmodulity() {
 		 		prev_y = new_y;
 		 	}
 			
-			makecross(critline.real()*150.f + width / 2, critline.imag()*150.f + height / 2, 255);
-			makecross(critbound0.real()*150.f + width / 2, critbound0.imag()*150.f + height / 2, 255, 0, 255);
-			makecross(critbound1.real()*150.f + width / 2, critbound1.imag()*150.f + height / 2, 255, 0, 255);
+			makecross(critline.real()*scale + width / 2, critline.imag()*scale + height / 2, 255);
+			makecross(critbound0.real()*scale + width / 2, critbound0.imag()*scale + height / 2, 255, 0, 255);
+			makecross(critbound1.real()*scale + width / 2, critbound1.imag()*scale + height / 2, 255, 0, 255);
 			
 			gprint(20, 20, "i=%x", y);
 

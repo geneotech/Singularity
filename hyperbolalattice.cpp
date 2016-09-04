@@ -20,7 +20,7 @@ double analytic_floor(double x) {
 
 double eps = 0.00001;
 #include <iostream>
-
+#include "util.h"
 
 struct plotter {
 	bool plotted = false;
@@ -55,11 +55,13 @@ void hyperbolalattice() {
 	double yoff = 0;
 	int width = 1920;
 	int height = 1080;
+	bool dolattice = true;
 
-	double pixels_per_square = width/3;
+	double pixels_per_square = width/32;
 
 	setwh(width, height);
 
+	if(dolattice)
 	for (int x = 0; x < width; ++x) {
 		for (int y = 0; y < height; ++y) {
 			setpix(x * pixels_per_square, y * pixels_per_square, 255, 0, 0);
@@ -79,6 +81,35 @@ void hyperbolalattice() {
 	double from = 11;
 	double to = 11;
 
+	plotter zeta_r;
+	plotter zeta_i;
+
+	int plotxoff = -16;
+	int plotyoff = 8;
+
+	for (int x = 0; x < width; ++x) {
+		double fx = x / pixels_per_square;
+		fx += plotxoff;
+
+		auto zz = cgamma(cc(fx, 0.5f));
+
+		zeta_r.plot(x, (zz.real() + plotyoff)*pixels_per_square, 255);
+		zeta_i.plot(x, (zz.imag()+plotyoff)*pixels_per_square, 0, 255, 0);
+
+		//vec2 p1(fx, eval(fx, m));
+		//fx += 1;
+		//vec2 p2(fx, eval(fx, m));
+	}
+
+	std::ostringstream ss;
+	ss << "P:/newpics/plots/p";
+	//ss << std::fixed << m;
+	ss << ".png";
+	lodepng::encode(ss.str(), img, w, h);
+
+
+	// hyperbola on lattice and distances 
+	/*
 	for (double m = from; m <= to; m += 0.05) {
 		//for (double m = 2; m < 11;m+=0.05) {
 		setwh(width, height);
@@ -192,12 +223,12 @@ void hyperbolalattice() {
 		}
 
 		std::ostringstream ss;
-		ss << "newpics/latticefloor";
+		ss << "P:/newpics/plots";
 		ss << std::fixed << m;
 		ss << ".png";
 		lodepng::encode(ss.str(), img, w, h);
 	}
-
+	*/
 	int maxs = 3;
 	//for (double m = from; m <= to; m += 0.05) {
 	//	//for (double m = 2; m < 11;m+=0.05) {
