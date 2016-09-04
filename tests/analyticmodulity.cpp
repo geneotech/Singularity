@@ -131,6 +131,31 @@ void makecross(int x, int y, Args... args) {
 	Line(x, y- 10, x, y + 10, args...);
 }
 
+
+#include "../typesafe_sprintf.h"
+#include "../glyphs.h"
+
+template<class... Args>
+void gprint(int x, int y, Args... args) {
+	std::string ss = typesafe_sprintf(args...);
+
+	for (auto l : ss) {
+		if (l == ' ')
+			l = '_';
+
+		auto& g = glyphs[l];
+
+		for (int i = 0; i < g.w; ++i) {
+			for (int j = 0; j < g.h; ++j) {
+				if(g.img[(j * g.w + i) * 4] == 0)
+					setpix(x + i, y + g.h - j - 1, 255);
+			}
+		}
+
+		x += g.w;
+	}
+}
+
 void analyticmodulity() {
 
 	//for (int i = 2; i < 100; ++i) {
@@ -339,13 +364,15 @@ void analyticmodulity() {
 			makecross(critline.real()*150.f + width / 2, critline.imag()*150.f + height / 2, 255);
 			makecross(critbound0.real()*150.f + width / 2, critbound0.imag()*150.f + height / 2, 255, 0, 255);
 			makecross(critbound1.real()*150.f + width / 2, critbound1.imag()*150.f + height / 2, 255, 0, 255);
+			
+			gprint(20, 20, "i=%x", y);
 
 		 	std::ostringstream ss;
 		 	ss << "P:/newpics/big2/zeta";
 		 	ss << imgi;
-		 	ss << "(";
-		 	ss << y;
-		 	ss << ")";
+		 	//ss << "(";
+		 	//ss << y;
+		 	//ss << ")";
 		 	ss << ".png";
 		 	lodepng::encode(ss.str(), img, w, h);
 		 

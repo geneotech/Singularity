@@ -137,9 +137,11 @@
     <ClCompile Include="tests\analyticmodulity.cpp" />
     <ClCompile Include="tests\factorizator.cpp" />
     <ClCompile Include="tests\spiral.cpp" />
+    <ClCompile Include="typesafe_sprintf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h" />
+    <ClInclude Include="glyphs.h" />
     <ClInclude Include="img.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="math\matrix.h" />
@@ -152,6 +154,7 @@
     <ClInclude Include="prime_evolution.h" />
     <ClInclude Include="randval.h" />
     <ClInclude Include="tests\tests.h" />
+    <ClInclude Include="typesafe_sprintf.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

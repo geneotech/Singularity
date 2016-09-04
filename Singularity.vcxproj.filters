@@ -63,6 +63,9 @@
     <ClCompile Include="misc\randval.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="typesafe_sprintf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cgp\src\cgp.h">
@@ -102,6 +105,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="misc\randval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="typesafe_sprintf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glyphs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

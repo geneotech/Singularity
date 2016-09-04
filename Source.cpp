@@ -79,8 +79,27 @@ void _reportChromo(struct chromosome* bestChromo) {
 
 	std::cout << "Active nodes:" << getActiveNodes(bestChromo) << std::endl;
 }
+#include <vector>
+#include "lodepng.h"
+#include "glyphs.h"
+
+glyph glyphs[256];
+
+void load_glyphs(std::string letters) {
+	for (auto l : letters) {
+		auto& g = glyphs[l];
+
+		std::string fname = "glyphs/";
+		fname += l;
+		fname += ".png";
+
+		lodepng::decode(g.img, g.w, g.h, fname);
+	}
+}
 
 int main() {
+	load_glyphs("0123456789ie.-=_");
+
 	is_prime_lookup_init();
 
 	//run_modulity_cgp();
