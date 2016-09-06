@@ -91,6 +91,19 @@ namespace augs {
 	}
 
 	template <class vec, class d>
+	vec& rotate_rad(vec& v, d angle) {
+		auto s = sin(angle);
+		auto c = cos(angle);
+
+		vec rotated;
+
+		rotated.x = v.x * c - v.y * s;
+		rotated.y = v.x * s + v.y * c;
+
+		return v = rotated;
+	}
+
+	template <class vec, class d>
 	vec& rotate(vec& v, const vec& origin, d angle) {
 		angle *= static_cast<d>(DEG_TO_RAD);
 		auto s = sin(angle);
@@ -425,6 +438,11 @@ namespace augs {
 		template <class v> vec2t operator*(const v& p) const { return vec2t(x * p.x, y * p.y); }
 		template <class v> vec2t operator/(const v& p) const { return vec2t(x / p.x, y / p.y); }
 
+		vec2t operator-(long double d) const { return vec2t(x - static_cast<type>(d), y - static_cast<type>(d)); }
+		vec2t operator+(long double d) const { return vec2t(x + static_cast<type>(d), y + static_cast<type>(d)); }
+		vec2t operator*(long double d) const { return vec2t(x * static_cast<type>(d), y * static_cast<type>(d)); }
+		vec2t operator/(long double d) const { return vec2t(x / static_cast<type>(d), y / static_cast<type>(d)); }
+
 		vec2t operator-(double d) const { return vec2t(x - static_cast<type>(d), y - static_cast<type>(d)); }
 		vec2t operator+(double d) const { return vec2t(x + static_cast<type>(d), y + static_cast<type>(d)); }
 		vec2t operator*(double d) const { return vec2t(x * static_cast<type>(d), y * static_cast<type>(d)); }
@@ -449,6 +467,11 @@ namespace augs {
 		vec2t& operator+=(double d) { x += d; y += d; return *this; }
 		vec2t& operator*=(double d) { x *= d; y *= d; return *this; }
 		vec2t& operator/=(double d) { x /= d; y /= d; return *this; }
+
+		vec2t& operator-=(long double d) { x -= d; y -= d; return *this; }
+		vec2t& operator+=(long double d) { x += d; y += d; return *this; }
+		vec2t& operator*=(long double d) { x *= d; y *= d; return *this; }
+		vec2t& operator/=(long double d) { x /= d; y /= d; return *this; }
 		
 		vec2t& operator-=(float d) { x -= d; y -= d; return *this; }
 		vec2t& operator+=(float d) { x += d; y += d; return *this; }

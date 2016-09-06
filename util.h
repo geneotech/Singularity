@@ -42,7 +42,7 @@ static cc zeta_alternating(float xx, float yy, const int iters) {
 			rhs += term;
 	}
 
-	return rhs / mult;
+	return rhs;// / mult;
 }
 
 static cc zeta(float xx, float yy, const int iters = 6260);
@@ -54,10 +54,10 @@ static cc zeta(cc s, const int iters = 6260) {
 static cc zeta(float xx, float yy, const int iters) {
 	cc s(xx, yy);
 
-	if (xx < 0.5f) {
-		return std::pow(2, s) * std::pow(PId, s - cc(1)) * std::sin(cc(PId / 2) * s) * cgamma(cc(1) - s) * zeta(cc(1) - s);
-	}
-	else
+	//if (xx < 0.5f) {
+	//	return std::pow(2, s) * std::pow(PId, s - cc(1)) * std::sin(cc(PId / 2) * s) * cgamma(cc(1) - s) * zeta(cc(1) - s);
+	//}
+	//else
 		return zeta_alternating(xx, yy, iters);
 }
 

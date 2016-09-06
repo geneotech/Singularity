@@ -37,8 +37,8 @@ void analyticmodulity() {
 
 
 	int offset = 1;
-	int width = 500;
-	int height = 300;
+	int width = 1280;
+	int height = 720;
 	int xscale = 1;
 
 	//_MM(13, 70);
@@ -158,12 +158,10 @@ void analyticmodulity() {
 		// zeta trajectory along strip
 		// single image samples all critical x for given y
 	
-		 float from = -1;
-		 float to = 100;
 		 int samples = 340;
 		 int imgi = 0;
 		 float maxsample = 28.f;
-		 float scale = 50;
+		 float scale = 150;
 		 
 		 std::cout << "zeta(-7.f, 7.f) = " << zeta(-7.f, 7.f) << std::endl;
 		 std::cout << "zeta(1, 7.f)    = " << zeta(1, 7.f) << std::endl;
@@ -175,7 +173,7 @@ void analyticmodulity() {
 		 std::cout << "zeta(0.5, 7.f)  = " << zeta(0.5, 7.f) << std::endl;
 		 std::cout << "zeta(-1, 7.f)   = " << zeta(-1, 7.f) << std::endl;
 		 std::cout << "zeta(-2, 7.f)   = " << zeta(-2, 7.f)  << std::endl;
-
+		 /*
 		 for (float y = from; y < to; y += 0.1f) {
 		 	setwh(width, height);
 		 	
@@ -193,12 +191,11 @@ void analyticmodulity() {
 			auto critbound0 = zeta(0.0f, y);
 			auto critbound1 = zeta(1.0f, y);
 		 
-		 	for (int c = -samples*32; c < 40; ++c)
+		 	for (float xx = 0.5f; xx <= 8.f; xx += 0.05)
 		 	{
-		 		float xx = (maxsample /samples) * c;
 		 		float yy = y;
-		 
-		 		auto result = spiral(xx, yy);
+
+		 		auto result = zeta(xx, yy);
 		 
 		 		int new_x = result.real()*scale + width / 2;
 		 		int new_y = result.imag()*scale + height / 2;
@@ -237,8 +234,178 @@ void analyticmodulity() {
 		 	lodepng::encode(ss.str(), img, w, h);
 		 
 		 	imgi += 1;
+		 }*/
+		 // zeta euler spirals
+
+		 for (double y = 0.; y < 450.; y += 0.05)
+		 //float y = 60.83177;
+		 {
+
+			 auto critline = zeta(0.5f, y);
+			 auto critbound0 = zeta(0.0f, y);
+			 auto critbound1 = zeta(1.0f, y);
+
+			 //for (float xx = 0.5f; xx <= 2.f; xx += 0.01)
+			 float xx = 0.5f;
+			 {
+				 setwh(width, height);
+
+				 Line(width / 2 - 10, height / 2, width / 2 + 10, height / 2, 255, 0, 0);
+				 Line(width / 2, height / 2 - 10, width / 2, height / 2 + 10, 255, 0, 0);
+
+				 {
+					 float yy = y;
+
+					 cc prevcomplex;
+
+					 int prev_x = width / 2;
+					 int prev_y = height / 2;
+
+					 bool wasprev = true;
+
+					 cc expo(xx, yy);
+					 cc mult = cc(1, 0) - (cc(2, 0) / pow(cc(2, 0), expo));
+
+					 cc rhs;
+
+					 for (int i = 1; i <= 600; ++i) {
+						 auto term = cc(1, 0) / pow(cc(i, 0), expo);
+
+						 if (i % 2 == 0)
+							 rhs -= term;
+						 else
+							 rhs += term;
+
+						 auto result = rhs;// / mult;
+
+						 int new_x = result.real()*scale + width / 2;
+						 int new_y = result.imag()*scale + height / 2;
+
+						 if (wasprev) {
+							 //if (c > 0 && (maxsample / samples) * c > 0.5f && (maxsample / samples) * (c - 1) <= 0.5f)
+							 //	Line(prev_x, prev_y, new_x, new_y, 255);
+							 //else if (c > 0 && (maxsample / samples) * c > 1.0f && (maxsample / samples) * (c - 1) <= 1.0f)
+							 //	Line(prev_x, prev_y, new_x, new_y, 0, 0, 255);
+							 //else if (c == 0)
+							 //	Line(prev_x, prev_y, new_x, new_y, 0, 0, 255);
+							 //else
+							 //Line(prev_x, prev_y, new_x, new_y, 0, 255, 0);
+						 }
+						 wasprev = true;
+						 //std::cout << (result - prevcomplex) << std::endl;
+						 prevcomplex = result;
+
+						 prev_x = new_x;
+						 prev_y = new_y;
+					 }
+				 }
+				 
+				 {
+					 long double param1 = y;
+					 typedef vec2t<long double> vd;
+
+					 vd pos(1, 0), prevpos;
+					 
+					 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 255);
+					 
+					 long double dt = 1;
+
+					 for (long double i = 1 + dt; i <= 600; i += dt) {
+						 vd lastvec = prevpos - pos;
+						 
+						 augs::rotate_rad(lastvec, -param1 * (log(i) - log(i - dt)));
+						 
+						 lastvec.set_length(1.0 / sqrt(i));
+						 
+						 prevpos = pos;
+						 pos += lastvec;
+
+						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 0, 255,0);
+					 }
+				 }
+				 /*
+				 {
+					 long double param1 = y*1000;
+					 typedef vec2t<long double> vd;
+					 typedef long double ld;
+
+					 vd pos(1, 0), prevpos;
+					 vd vel(1, 0);
+					 ld angvel = param1;
+					 
+					 //augs::rotate_rad(vel, -param1);
+
+					 long double dt = 0.1;
+
+					 for (long double i = 1+dt; i <= 600; i += dt) {
+						 // integrate
+
+						 //angvel += 0.00001;
+						 angvel = -param1 * (log(i) - log(i-dt)) + PId*dt;
+
+						 //vel.set(cos(rads), sin(rads)) * 1.0/sqrt(i);
+						 vel.set_length(1.0 / sqrt(i));
+						 augs::rotate_rad(vel, angvel * dt);
+
+						 prevpos = pos;
+						 pos += vel * dt;
+
+						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 255);
+					 }
+				 }*/
+
+
+				 {
+					 typedef vec2t<long double> vd;
+					 typedef long double ld;
+
+					 vd pos(1, 0), prevpos;
+					 vd vel(1, 0);
+					 ld angvel = PId/2;
+					 //scale = 40;
+
+					 //augs::rotate_rad(vel, -param1);
+
+					 long double dt = 0.01;
+
+					 for (long double i = 1 + dt; i <= 600; i += dt) {
+						 // integrate
+						 
+						 //angvel -= 0.04;
+						 //vel.set(cos(rads), sin(rads)) * 1.0/sqrt(i);
+						 //vel.set_length(1.0 / sqrt(i));
+						 augs::rotate_rad(vel, angvel * dt);
+						 vel.set_length( 1/sqrt(i));
+						 if (i > 300)
+							 angvel -= 0.01;
+							 //vel.set_length(8 / sqrt(i));
+
+						 prevpos = pos;
+						 pos += vel * dt;
+
+						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 255);
+					 }
+				 }
+
+				 //makecross(critline.real()*scale + width / 2, critline.imag()*scale + height / 2, 255);
+				 //makecross(critbound0.real()*scale + width / 2, critbound0.imag()*scale + height / 2, 255, 0, 255);
+				 //makecross(critbound1.real()*scale + width / 2, critbound1.imag()*scale + height / 2, 255, 0, 255);
+
+				 gprint(20, 20, "i=%x", y);
+
+				 std::ostringstream ss;
+				 ss << "P:/newpics/big2/zeta";
+				 ss << imgi;
+				 //ss << "(";
+				 //ss << y;
+				 //ss << ")";
+				 ss << ".png";
+				 lodepng::encode(ss.str(), img, w, h);
+
+				 imgi += 1;
+			 }
 		 }
-		 
+
 		//zeta trajectory along strip
 		//single image samples given x for several y
 /*
