@@ -14,8 +14,8 @@ template <typename T> int sgn(T val) {
 	return (T(0) < val) - (val < T(0));
 }
 
-std::pair<bool, vec2> circle_ray_intersection(vec2 a, vec2 b, vec2 circle, float radius);
-std::vector<vec2> generate_circle_points(float radius, float last_angle_in_degrees, float starting_angle_in_degrees, unsigned int number_of_points);
+std::pair<bool, vec2> circle_ray_intersection(vec2 a, vec2 b, vec2 circle, double radius);
+std::vector<vec2> generate_circle_points(double radius, double last_angle_in_degrees, double starting_angle_in_degrees, unsigned int number_of_points);
 
 namespace augs {
 	template <class T, class A>
@@ -199,12 +199,12 @@ namespace augs {
 		type distance_from_segment_sq(vec2t v, vec2t w) const {
 			auto& p = *this;
 			// Return minimum distance between line segment vw and point p
-			const float l2 = (v - w).length_sq();  // i.e. |w-v|^2 -  avoid a sqrt
+			const double l2 = (v - w).length_sq();  // i.e. |w-v|^2 -  avoid a sqrt
 			if (l2 == 0.0) return (p - v).length_sq();   // v == w case
 			// Consider the line extending the segment, parameterized as v + t (w - v).
 			// We find projection of point p onto the line. 
 			// It falls where t = [(p-v) . (w-v)] / |w-v|^2
-			const float t = (p - v).dot(w - v) / l2;
+			const double t = (p - v).dot(w - v) / l2;
 			if (t < 0.f) return (p - v).length_sq();       // Beyond the 'v' end of the segment
 			else if (t > 1.f) return (p - w).length_sq();  // Beyond the 'w' end of the segment
 			const vec2t projection = v + t * (w - v);  // Projection falls on the segment
@@ -216,12 +216,12 @@ namespace augs {
 		}
 
 		vec2t project_onto(vec2t v, vec2t w) const {
-			const float t = ((*this) - v).dot(w - v) / (v - w).length_sq();
+			const double t = ((*this) - v).dot(w - v) / (v - w).length_sq();
 			return v + t * (w - v);
 		}
 
 		vec2t closest_point_on_segment(vec2t v, vec2t w) const {
-			const float t = ((*this) - v).dot(w - v) / (v - w).length_sq();
+			const double t = ((*this) - v).dot(w - v) / (v - w).length_sq();
 			
 			if (t < 0.f) return v;
 			else if (t > 1.f) return w;
@@ -229,35 +229,35 @@ namespace augs {
 			return v + t * (w - v);
 		}
 
-		float dot(vec2t v) const {
+		double dot(vec2t v) const {
 			return x * v.x + y * v.y;
 		}
 
-		float cross(vec2t v) const {
+		double cross(vec2t v) const {
 			return x * v.y - y * v.x;
 		}
 
-		float length() const {
+		double length() const {
 			return sqrt(length_sq());
 		}
 
-		float length_sq() const {
+		double length_sq() const {
 			return x*x + y*y;
 		}
 
-		float radians() const {
+		double radians() const {
 			return atan2(y, x);
 		}
 
-		float degrees() const {
+		double degrees() const {
 			return radians()*RAD_TO_DEG;
 		}
 
-		float angle_between(const vec2t<>& v) {
+		double angle_between(const vec2t<>& v) {
 			return degrees() - v.degrees();
 		}
 
-		float radians_between(const vec2t& v) const {
+		double radians_between(const vec2t& v) const {
 			auto a_norm = vec2(v).normalize();
 			auto b_norm = vec2(*this).normalize();
 			auto dotted = a_norm.dot(b_norm);
@@ -270,7 +270,7 @@ namespace augs {
 			return result;
 		}
 
-		float degrees_between(const vec2t& v) const {
+		double degrees_between(const vec2t& v) const {
 			return radians_between(v) * RAD_TO_DEG;
 		}
 
@@ -286,44 +286,44 @@ namespace augs {
 			return *this;
 		}
 
-		vec2t& set_from_degrees(float degrees) {
-			float radians = degrees * DEG_TO_RAD;
+		vec2t& set_from_degrees(double degrees) {
+			double radians = degrees * DEG_TO_RAD;
 			set(cos(radians), sin(radians));
 			normalize();
 			return *this;
 		}
 
-		vec2t& set_from_radians(float radians) {
+		vec2t& set_from_radians(double radians) {
 			return set_from_degrees(radians * RAD_TO_DEG);
 		}
 
 		template <typename v>
-		vec2t& rotate(float angle, v origin) {
-			augs::rotate<vec2t, float>(*this, origin, angle);
+		vec2t& rotate(double angle, v origin) {
+			augs::rotate<vec2t, double>(*this, origin, angle);
 			return *this;
 		}
 
-		vec2t lerp(const vec2t& bigger, float ratio) const {
+		vec2t lerp(const vec2t& bigger, double ratio) const {
 			return (*this) + (bigger - (*this)) * ratio;
 		}
 
-		vec2t& set_length(float len) {
+		vec2t& set_length(double len) {
 			normalize();
 			return (*this) *= len;
 		}
 
-		vec2t& add_length(float len) {
-			float actual_length = length();
+		vec2t& add_length(double len) {
+			double actual_length = length();
 			normalize_hint(actual_length);
 			return (*this) *= (actual_length + len);
 		}
 
-		vec2t& normalize_hint(float suggested_length) {
-			float len = suggested_length;
-			if (std::abs(len) < std::numeric_limits<float>::epsilon())
+		vec2t& normalize_hint(double suggested_length) {
+			double len = suggested_length;
+			if (std::abs(len) < std::numeric_limits<double>::epsilon())
 				return *this;
 
-			float inv_len = 1.f / len;
+			double inv_len = 1.f / len;
 
 			x *= inv_len;
 			y *= inv_len;
@@ -386,7 +386,7 @@ namespace augs {
 			return *this;
 		}
 
-		vec2t& clamp(float max_length) {
+		vec2t& clamp(double max_length) {
 			if (length_sq() > max_length*max_length) {
 				normalize();
 				(*this) *= max_length;
@@ -394,35 +394,35 @@ namespace augs {
 			return *this;
 		}
 
-		bool x_non_zero(float eps = AUGS_EPSILON) const {
+		bool x_non_zero(double eps = AUGS_EPSILON) const {
 			return std::abs(x) > eps;
 		}
 
-		bool y_non_zero(float eps = AUGS_EPSILON) const {
+		bool y_non_zero(double eps = AUGS_EPSILON) const {
 			return std::abs(y) > eps;
 		}
 
-		bool non_zero(float eps = AUGS_EPSILON) const {
+		bool non_zero(double eps = AUGS_EPSILON) const {
 			return x_non_zero(eps) || y_non_zero();
 		}
 		
 		vec2t operator-() { return vec2t(x * -1, y * -1); }
 
-		bool compare_abs(const vec2t& b, const float epsilon = AUGS_EPSILON) {
+		bool compare_abs(const vec2t& b, const double epsilon = AUGS_EPSILON) {
 			if (std::abs(x - b.x) < epsilon && std::abs(y - b.y) < epsilon)
 				return true;
 
 			return false;
 		}
 
-		bool is_epsilon(const float epsilon = AUGS_EPSILON) {
+		bool is_epsilon(const double epsilon = AUGS_EPSILON) {
 			if (std::abs(x) < epsilon && std::abs(y) < epsilon)
 				return true;
 
 			return false;
 		}
 
-		bool compare(const vec2t& b, const float epsilon = AUGS_EPSILON) {
+		bool compare(const vec2t& b, const double epsilon = AUGS_EPSILON) {
 			if ((*this - b).length_sq() <= epsilon*epsilon)
 				return true;
 
@@ -448,11 +448,6 @@ namespace augs {
 		vec2t operator*(double d) const { return vec2t(x * static_cast<type>(d), y * static_cast<type>(d)); }
 		vec2t operator/(double d) const { return vec2t(x / static_cast<type>(d), y / static_cast<type>(d)); }
 		
-		vec2t operator-(float d) const { return vec2t(x - d, y - d); }
-		vec2t operator+(float d) const { return vec2t(x + d, y + d); }
-		vec2t operator*(float d) const { return vec2t(x * d, y * d); }
-		vec2t operator/(float d) const { return vec2t(x / d, y / d); }
-		
 		vec2t operator-(int d) const { return vec2t(x - static_cast<type>(d), y - static_cast<type>(d)); }
 		vec2t operator+(int d) const { return vec2t(x + static_cast<type>(d), y + static_cast<type>(d)); }
 		vec2t operator*(int d) const { return vec2t(x * static_cast<type>(d), y * static_cast<type>(d)); }
@@ -472,11 +467,6 @@ namespace augs {
 		vec2t& operator+=(long double d) { x += d; y += d; return *this; }
 		vec2t& operator*=(long double d) { x *= d; y *= d; return *this; }
 		vec2t& operator/=(long double d) { x /= d; y /= d; return *this; }
-		
-		vec2t& operator-=(float d) { x -= d; y -= d; return *this; }
-		vec2t& operator+=(float d) { x += d; y += d; return *this; }
-		vec2t& operator*=(float d) { x *= d; y *= d; return *this; }
-		vec2t& operator/=(float d) { x /= d; y /= d; return *this; }
 		
 		vec2t& operator-=(int d) { x -= d; y -= d; return *this; }
 		vec2t& operator+=(int d) { x += d; y += d; return *this; }

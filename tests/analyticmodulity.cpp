@@ -289,7 +289,7 @@ void analyticmodulity() {
 							 //else if (c == 0)
 							 //	Line(prev_x, prev_y, new_x, new_y, 0, 0, 255);
 							 //else
-							 //Line(prev_x, prev_y, new_x, new_y, 0, 255, 0);
+							 Line(prev_x, prev_y, new_x, new_y, 0, 255, 0);
 						 }
 						 wasprev = true;
 						 //std::cout << (result - prevcomplex) << std::endl;
@@ -300,6 +300,8 @@ void analyticmodulity() {
 					 }
 				 }
 				 
+				 // proper delta=1 traversal of alternating zeta
+				 /*
 				 {
 					 long double param1 = y;
 					 typedef vec2t<long double> vd;
@@ -320,9 +322,62 @@ void analyticmodulity() {
 						 prevpos = pos;
 						 pos += lastvec;
 
-						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 0, 255,0);
+						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 255);
 					 }
 				 }
+				 */
+				 // proper traversal of alternating zeta with separate components
+
+				 {
+					 long double param1 = y*100;
+					 typedef vec2t<long double> vd;
+
+					 for (int di = 0; di < 1; ++di) 
+					 {
+						 vd pos[3];
+						 vd prevpos[3];
+						 long double dt = di ? 1 : 0.5;
+
+					 for (long double i = 1; i <= 600; i += dt) {
+						 vd contribs[2];
+
+						 {
+							 vd vel(1.0 / sqrt(i * 2 - 1), 0);
+							 augs::rotate_rad(vel, dt*-param1 * (log(i * 2 - 1)));
+
+							 prevpos[0] = pos[0];
+							 contribs[0] = vel * dt;
+							 pos[0] += contribs[0];
+
+							 Line(prevpos[0].x*scale + width / 2, prevpos[0].y*scale + height / 2, pos[0].x*scale + width / 2, pos[0].y*scale + height / 2, 255, 0, 0);
+						 }
+
+						 {
+							 vd vel(1.0 / sqrt(i * 2), 0);
+							 augs::rotate_rad(vel, dt*-param1 * (log(i * 2)));
+
+							 prevpos[1] = pos[1];
+							 contribs[1] = vel * dt;
+							 pos[1] += contribs[1];
+
+							 Line(prevpos[1].x*scale + width / 2, prevpos[1].y*scale + height / 2, pos[1].x*scale + width / 2, pos[1].y*scale + height / 2, 0, 0, 255);
+						 }
+
+						 //prevpos[2] = pos[2];
+						 //pos[2] += contribs[0];
+						 //Line(prevpos[2].x*scale + width / 2, prevpos[2].y*scale + height / 2, pos[2].x*scale + width / 2, pos[2].y*scale + height / 2, 255);
+						 //prevpos[2] = pos[2];
+						 //pos[2] -= contribs[1];
+						 //Line(prevpos[2].x*scale + width / 2, prevpos[2].y*scale + height / 2, pos[2].x*scale + width / 2, pos[2].y*scale + height / 2, 255);
+						 prevpos[2] = pos[2];
+						 pos[2] = pos[0] - pos[1];
+						 Line(prevpos[2].x*scale + width / 2, prevpos[2].y*scale + height / 2, pos[2].x*scale + width / 2, pos[2].y*scale + height / 2, 255);
+
+					 }
+					 }
+
+				 }
+
 				 /*
 				 {
 					 long double param1 = y*1000;
@@ -353,39 +408,6 @@ void analyticmodulity() {
 						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 255);
 					 }
 				 }*/
-
-
-				 {
-					 typedef vec2t<long double> vd;
-					 typedef long double ld;
-
-					 vd pos(1, 0), prevpos;
-					 vd vel(1, 0);
-					 ld angvel = PId/2;
-					 //scale = 40;
-
-					 //augs::rotate_rad(vel, -param1);
-
-					 long double dt = 0.01;
-
-					 for (long double i = 1 + dt; i <= 600; i += dt) {
-						 // integrate
-						 
-						 //angvel -= 0.04;
-						 //vel.set(cos(rads), sin(rads)) * 1.0/sqrt(i);
-						 //vel.set_length(1.0 / sqrt(i));
-						 augs::rotate_rad(vel, angvel * dt);
-						 vel.set_length( 1/sqrt(i));
-						 if (i > 300)
-							 angvel -= 0.01;
-							 //vel.set_length(8 / sqrt(i));
-
-						 prevpos = pos;
-						 pos += vel * dt;
-
-						 Line(prevpos.x*scale + width / 2, prevpos.y*scale + height / 2, pos.x*scale + width / 2, pos.y*scale + height / 2, 255);
-					 }
-				 }
 
 				 //makecross(critline.real()*scale + width / 2, critline.imag()*scale + height / 2, 255);
 				 //makecross(critbound0.real()*scale + width / 2, critbound0.imag()*scale + height / 2, 255, 0, 255);

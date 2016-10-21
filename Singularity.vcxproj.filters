@@ -48,9 +48,6 @@
     <ClCompile Include="tests\spiral.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tests\factorizator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="hyperbolalattice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,6 +61,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="typesafe_sprintf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\partialzetasums.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="factorizator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

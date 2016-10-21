@@ -1,3 +1,4 @@
+#include "factorizator.h"
 int global_primes[] = {
 	2     , 3      ,5      ,7     ,11     ,13     ,17     ,19     ,23     ,29
 	,31    , 37     ,41     ,43    , 47    , 53    , 59    , 61    , 67    , 71
@@ -1007,6 +1008,13 @@ int max_primes() {
 }
 
 #include <algorithm>
+
+bool is_prime_lookup_safe(int num) {
+	if (num < 104730)
+		return is_prime_lookup[num] != 0;
+
+	else return get_full_factor_info(num).prime();
+}
 
 void is_prime_lookup_init() {
 	std::fill(is_prime_lookup, is_prime_lookup + sizeof(is_prime_lookup)/sizeof(is_prime_lookup[0]), 0);
